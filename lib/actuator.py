@@ -1,5 +1,5 @@
 import pyvesc
-from hsv_filter import JSONManager
+from lib.utils import JSONManager
 
 class VESC(JSONManager):
     def __init__(self):
