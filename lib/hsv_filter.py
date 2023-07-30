@@ -15,6 +15,8 @@ class detectLine(JSONManager):
         ''' This method is encharged of correctly initiallizing the detect Line objects'''
         print("Starting... Please wait...")
 
+        self.cX, self.cY = 0, 0
+
         self.windowName = windowName
 
         # Inherit parent properties
