@@ -10,7 +10,7 @@ detector = detectLine(camera)
 
 while True:
     steering, throttle = detector.get_actuator_values()
-    vehicle.run(steering)
+    vehicle.run(steering, throttle)
 
     # Wait for q keypress or KeyboardInterrupt event to occur
     if cv2.waitKey(1) & 0xFF == ord('q'):
