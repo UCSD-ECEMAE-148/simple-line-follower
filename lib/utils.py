@@ -16,6 +16,7 @@ class JSONManager():
         self.upper_hue = self.settings['color_detection']['upper_hue']
         self.upper_sat = self.settings['color_detection']['upper_sat']
         self.upper_val = self.settings['color_detection']['upper_val']
+        self.invert_mask = self.settings['color_detection']['invert_mask']
 
         # Set steering and throttle
         self.steering_multiplier = self.settings['vesc_settings']['steering_multiplier']
@@ -37,6 +38,7 @@ class JSONManager():
             self.settings['color_detection']['upper_hue'] = self.upper_hue
             self.settings['color_detection']['upper_sat'] = self.upper_sat
             self.settings['color_detection']['upper_val'] = self.upper_val
+            self.settings['color_detection']['invert_mask'] = self.invert_mask
 
             # Save steering and throttle
             self.settings['vesc_settings']['steering_multiplier'] = self.steering_multiplier

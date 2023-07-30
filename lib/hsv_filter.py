@@ -42,6 +42,9 @@ class detectLine(JSONManager):
             cv2.createTrackbar('Upper Sat', 'Mask', self.upper_sat, 255, self.update_upper_sat)
             cv2.createTrackbar('Upper Val', 'Mask', self.upper_val, 255, self.update_upper_val)
 
+            # Create invert button
+            cv2.createTrackbar('Invert', 'Mask', self.invert_mask, 1, lambda x: setattr(self, 'invert_mask', x))
+
             # Create trackbars for region of interest
             cv2.createTrackbar('Left Crop', 'Mask', int(self.left_crop*100), 100, self.update_left_crop)
             cv2.createTrackbar('Right Crop', 'Mask', int(self.right_crop*100), 100, self.update_right_crop)
@@ -55,19 +58,7 @@ class detectLine(JSONManager):
 
         # Capture new image from source
         self.frame = np.copy(self.camera.get_frame())
-        mask = self.hsv_filter(self.frame)
-        # Crop the image
-        # The crop values are in percentage of the original image, convert to pixels
-        left_crop = int(self.left_crop * self.frame.shape[1])
-        right_crop = int(self.right_crop * self.frame.shape[1])
-        top_crop = int(self.top_crop * self.frame.shape[0])
-        bottom_crop = int(self.bottom_crop * self.frame.shape[0])
-
-        # zero out pixels not in the mask
-        mask[0:top_crop,:] = 0
-        mask[(mask.shape[0]-bottom_crop):mask.shape[0],:] = 0
-        mask[:,0:left_crop] = 0
-        mask[:,(mask.shape[1]-right_crop):mask.shape[1]] = 0
+        mask = self.filter_frame()
 
         self.moment_search(mask) # Sets self.cX, self.cY
 
@@ -91,6 +82,27 @@ class detectLine(JSONManager):
             cv2.imshow('Mask', mask)
 
         return self.steering, self.throttle
+
+    def filter_frame(self):
+        mask = self.hsv_filter(self.frame)
+
+        if self.invert_mask:
+            mask = cv2.bitwise_not(mask)
+        
+        # Crop the image
+        # The crop values are in percentage of the original image, convert to pixels
+        left_crop = int(self.left_crop * self.frame.shape[1])
+        right_crop = int(self.right_crop * self.frame.shape[1])
+        top_crop = int(self.top_crop * self.frame.shape[0])
+        bottom_crop = int(self.bottom_crop * self.frame.shape[0])
+
+        # zero out pixels not in the mask
+        mask[0:top_crop,:] = 0
+        mask[(mask.shape[0]-bottom_crop):mask.shape[0],:] = 0
+        mask[:,0:left_crop] = 0
+        mask[:,(mask.shape[1]-right_crop):mask.shape[1]] = 0
+
+        return mask
 
     def moment_search(self, mask):
         '''Calculate the centroid of the mask'''
