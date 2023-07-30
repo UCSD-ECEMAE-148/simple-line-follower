@@ -6,7 +6,7 @@ class VESC(JSONManager):
         super().__init__()
         self.vesc = pyvesc.VESC(self.port)
 
-    def run(self, steering, throttle:0.0):
+    def run(self, steering, throttle = 0.0):
         self.vesc.set_servo(steering * self.steering_multiplier)
         self.vesc.set_rpm(throttle * self.throttle_multiplier)
 
