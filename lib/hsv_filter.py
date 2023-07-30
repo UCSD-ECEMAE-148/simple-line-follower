@@ -1,37 +1,7 @@
-import json
+from lib.utils import JSONManager
 import cv2
 import numpy as np
 
-class JSONManager():
-    def __init__(self):
-        f = open('settings.json')
-        self.settings = json.load(f)
-        f.close
-
-        # Set global parameters
-        self.calibration_mode = self.settings['calibration_mode']
-
-        # Set Color detection paramenters
-        self.lower_hue = self.settings['color_detection']['lower_hue']
-        self.lower_sat = self.settings['color_detection']['lower_sat']
-        self.lower_val = self.settings['color_detection']['lower_val']
-        self.upper_hue = self.settings['color_detection']['upper_hue']
-        self.upper_sat = self.settings['color_detection']['upper_sat']
-        self.upper_val = self.settings['color_detection']['upper_val']
-
-    def save_settings(self):
-        if self.calibration_mode:
-            # Save color detection parameters
-            self.settings['color_detection']['lower_hue'] = self.lower_hue
-            self.settings['color_detection']['lower_sat'] = self.lower_sat
-            self.settings['color_detection']['lower_val'] = self.lower_val
-            self.settings['color_detection']['upper_hue'] = self.upper_hue
-            self.settings['color_detection']['upper_sat'] = self.upper_sat
-            self.settings['color_detection']['upper_val'] = self.upper_val
-
-            f = open('settings.json','w')
-            f.write(json.dumps(self.settings, indent=4))
-            f.close()
 class detectLine(JSONManager):
     # Helper functions
     def update_lower_hue(self, value): self.lower_hue = value
@@ -68,7 +38,7 @@ class detectLine(JSONManager):
 
         print("Done initializing...")
 
-    def update_image(self):
+    def get_actuator_values(self):
         ''' Update image from video source and fid centroid of mask.'''
 
         # Capture new image from source
@@ -78,9 +48,10 @@ class detectLine(JSONManager):
 
         # Print translate to steering and throttle
         if self.cX is not None and self.cY is not None:
-            # Limit the steering angle from -1 to 1
-            self.steering = -(self.cX - self.frame.shape[1]/2) / (self.frame.shape[1]/2)
-            self.throttle = 1.0 - abs(self.steering)
+            # Limit the steering angle from 0 to 1
+            self.steering = max(min(1-(self.frame.shape[1]-self.cX)/(self.frame.shape[1]),1),0)
+            # Clamp the steering angle from 0 to 1
+            self.throttle = max(min(1.0 - abs(self.steering),1),0)
 
         if self.calibration_mode:
             # Show centroid on image
