@@ -22,6 +22,12 @@ class JSONManager():
         self.throttle_multiplier = self.settings['vesc_settings']['throttle_multiplier']
         self.port = self.settings['vesc_settings']['port']
 
+        # Region of interest
+        self.left_crop = self.settings['roi']['left_crop']
+        self.right_crop = self.settings['roi']['right_crop']
+        self.top_crop = self.settings['roi']['top_crop']
+        self.bottom_crop = self.settings['roi']['bottom_crop']
+
     def save_settings(self):
         if self.calibration_mode:
             # Save color detection parameters
@@ -36,6 +42,12 @@ class JSONManager():
             self.settings['vesc_settings']['steering_multiplier'] = self.steering_multiplier
             self.settings['vesc_settings']['throttle_multiplier'] = self.throttle_multiplier
             self.settings['vesc_settings']['port'] = self.port
+
+            # Save region of interest
+            self.settings['roi']['left_crop'] = self.left_crop
+            self.settings['roi']['right_crop'] = self.right_crop
+            self.settings['roi']['top_crop'] = self.top_crop
+            self.settings['roi']['bottom_crop'] = self.bottom_crop
 
             f = open('settings.json','w')
             f.write(json.dumps(self.settings, indent=4))

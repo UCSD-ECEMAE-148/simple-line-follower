@@ -1,16 +1,22 @@
 {
     "calibration_mode": true,
     "color_detection": {
-        "lower_hue": 43,
-        "lower_sat": 12,
-        "lower_val": 222,
-        "upper_hue": 128,
-        "upper_sat": 44,
+        "lower_hue": 0,
+        "lower_sat": 0,
+        "lower_val": 0,
+        "upper_hue": 255,
+        "upper_sat": 255,
         "upper_val": 255
     },
     "vesc_settings": {
         "steering_multiplier": 1.0,
         "throttle_multiplier": 0.15,
         "port": "/dev/ttyACM0"
+    },
+    "roi": {
+        "left_crop": 0.07,
+        "right_crop": 0.11,
+        "top_crop": 0.59,
+        "bottom_crop": 0.0
     }
 }

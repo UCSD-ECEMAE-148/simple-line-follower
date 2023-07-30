@@ -10,6 +10,10 @@ class detectLine(JSONManager):
     def update_upper_hue(self, value): self.upper_hue = value
     def update_upper_sat(self, value): self.upper_sat = value
     def update_upper_val(self, value): self.upper_val = value
+    def update_left_crop(self, value): self.left_crop = value/100
+    def update_right_crop(self, value): self.right_crop = value/100
+    def update_top_crop(self, value): self.top_crop = value/100
+    def update_bottom_crop(self, value): self.bottom_crop = value/100
     
     def __init__(self, camera, windowName='Camera'):
         ''' This method is encharged of correctly initiallizing the detect Line objects'''
@@ -38,6 +42,12 @@ class detectLine(JSONManager):
             cv2.createTrackbar('Upper Sat', 'Mask', self.upper_sat, 255, self.update_upper_sat)
             cv2.createTrackbar('Upper Val', 'Mask', self.upper_val, 255, self.update_upper_val)
 
+            # Create trackbars for region of interest
+            cv2.createTrackbar('Left Crop', 'Mask', int(self.left_crop*100), 100, self.update_left_crop)
+            cv2.createTrackbar('Right Crop', 'Mask', int(self.right_crop*100), 100, self.update_right_crop)
+            cv2.createTrackbar('Top Crop', 'Mask', int(self.top_crop*100), 100, self.update_top_crop)
+            cv2.createTrackbar('Bottom Crop', 'Mask', int(self.bottom_crop*100), 100, self.update_bottom_crop)
+
         print("Done initializing...")
 
     def get_actuator_values(self):
@@ -46,6 +56,19 @@ class detectLine(JSONManager):
         # Capture new image from source
         self.frame = np.copy(self.camera.get_frame())
         mask = self.hsv_filter(self.frame)
+        # Crop the image
+        # The crop values are in percentage of the original image, convert to pixels
+        left_crop = int(self.left_crop * self.frame.shape[1])
+        right_crop = int(self.right_crop * self.frame.shape[1])
+        top_crop = int(self.top_crop * self.frame.shape[0])
+        bottom_crop = int(self.bottom_crop * self.frame.shape[0])
+
+        # zero out pixels not in the mask
+        mask[0:top_crop,:] = 0
+        mask[(mask.shape[0]-bottom_crop):mask.shape[0],:] = 0
+        mask[:,0:left_crop] = 0
+        mask[:,(mask.shape[1]-right_crop):mask.shape[1]] = 0
+
         self.moment_search(mask) # Sets self.cX, self.cY
 
         # Print translate to steering and throttle
@@ -54,7 +77,7 @@ class detectLine(JSONManager):
             self.steering = max(min(1-(self.frame.shape[1]-self.cX)/(self.frame.shape[1]),1),0)
             # Clamp the steering angle from 0 to 1
             if self.steering > 0.5:
-                self.throttle = max(min(abs(0.5-self.steering),1),0)
+                self.throttle = max(min(abs(1.0-self.steering),1),0)
             else:
                 self.throttle = max(min(abs(self.steering),1),0)
 
