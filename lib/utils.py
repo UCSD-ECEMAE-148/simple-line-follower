@@ -22,6 +22,7 @@ class JSONManager():
         self.steering_multiplier = self.settings['vesc_settings']['steering_multiplier']
         self.throttle_multiplier = self.settings['vesc_settings']['throttle_multiplier']
         self.port = self.settings['vesc_settings']['port']
+        self.run_motor = self.settings['vesc_settings']['run_motor']
 
         # Region of interest
         self.left_crop = self.settings['roi']['left_crop']
@@ -44,6 +45,7 @@ class JSONManager():
             self.settings['vesc_settings']['steering_multiplier'] = self.steering_multiplier
             self.settings['vesc_settings']['throttle_multiplier'] = self.throttle_multiplier
             self.settings['vesc_settings']['port'] = self.port
+            self.settings['vesc_settings']['run_motor'] = self.run_motor
 
             # Save region of interest
             self.settings['roi']['left_crop'] = self.left_crop

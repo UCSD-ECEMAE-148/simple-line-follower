@@ -42,8 +42,9 @@ class detectLine(JSONManager):
             cv2.createTrackbar('Upper Sat', 'Mask', self.upper_sat, 255, self.update_upper_sat)
             cv2.createTrackbar('Upper Val', 'Mask', self.upper_val, 255, self.update_upper_val)
 
-            # Create invert button
+            # Create buttons
             cv2.createTrackbar('Invert', 'Mask', self.invert_mask, 1, lambda x: setattr(self, 'invert_mask', x))
+            cv2.createTrackbar('Run Motor', 'Mask', self.run_motor, 1, lambda x: setattr(self, 'run_motor', x))
 
             # Create trackbars for region of interest
             cv2.createTrackbar('Left Crop', 'Mask', int(self.left_crop*100), 100, self.update_left_crop)

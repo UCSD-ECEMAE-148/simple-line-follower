@@ -12,7 +12,8 @@
     "vesc_settings": {
         "steering_multiplier": 1.0,
         "throttle_multiplier": 0.15,
-        "port": "/dev/ttyACM0"
+        "port": "/dev/ttyACM0",
+        "run_motor": 0
     },
     "roi": {
         "left_crop": 0.07,

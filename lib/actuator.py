@@ -8,7 +8,12 @@ class VESC(JSONManager):
 
     def run(self, steering, throttle = 0.0):
         self.vesc.set_servo(steering * self.steering_multiplier)
-        self.vesc.set_duty_cycle(throttle * self.throttle_multiplier)
+
+        if self.run_motor:
+            self.vesc.set_duty_cycle(throttle * self.throttle_multiplier)
+        else:
+            self.vesc.set_duty_cycle(0.0)
+        
 
 
 if __name__ == '__main__':
