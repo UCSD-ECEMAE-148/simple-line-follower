@@ -69,8 +69,6 @@ class detectLine(JSONManager):
             self.steering = max(min(1-(self.frame.shape[1]-self.cX)/(self.frame.shape[1]),1),0)
 
             if self.run_motor:
-                self.throttle = 0.0
-            else:
                 # Clamp the steering angle from 0 to 1
                 if self.steering > 0.5:
                     self.throttle = abs(1.0-self.steering)
@@ -79,6 +77,8 @@ class detectLine(JSONManager):
 
                 # Clamp the throttle
                 self.throttle = max(2*self.max_throttle*self.throttle,self.min_throttle)
+            else:
+                self.throttle = 0.0
 
             
 
