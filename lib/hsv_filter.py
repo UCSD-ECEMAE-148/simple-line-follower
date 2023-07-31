@@ -69,9 +69,12 @@ class detectLine(JSONManager):
             self.steering = max(min(1-(self.frame.shape[1]-self.cX)/(self.frame.shape[1]),1),0)
             # Clamp the steering angle from 0 to 1
             if self.steering > 0.5:
-                self.throttle = max(min(abs(1.0-self.steering),1),0)
+                self.throttle = abs(1.0-self.steering)
             else:
-                self.throttle = max(min(abs(self.steering),1),0)
+                self.throttle = abs(self.steering)
+
+            # Clamp the throttle
+            self.throttle = max(2*self.max_throttle*self.throttle,self.min_throttle)
 
         if self.calibration_mode:
             # Show centroid on image

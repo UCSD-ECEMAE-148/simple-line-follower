@@ -20,7 +20,8 @@ class JSONManager():
 
         # Set steering and throttle
         self.steering_multiplier = self.settings['vesc_settings']['steering_multiplier']
-        self.throttle_multiplier = self.settings['vesc_settings']['throttle_multiplier']
+        self.max_throttle = self.settings['vesc_settings']['max_throttle']
+        self.min_throttle = self.settings['vesc_settings']['min_throttle']
         self.port = self.settings['vesc_settings']['port']
         self.run_motor = self.settings['vesc_settings']['run_motor']
 
@@ -43,7 +44,8 @@ class JSONManager():
 
             # Save steering and throttle
             self.settings['vesc_settings']['steering_multiplier'] = self.steering_multiplier
-            self.settings['vesc_settings']['throttle_multiplier'] = self.throttle_multiplier
+            self.settings['vesc_settings']['max_throttle'] = self.max_throttle
+            self.settings['vesc_settings']['min_throttle'] = self.min_throttle
             self.settings['vesc_settings']['port'] = self.port
             self.settings['vesc_settings']['run_motor'] = self.run_motor
 
