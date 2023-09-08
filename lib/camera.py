@@ -1,5 +1,7 @@
 import cv2
 import depthai as dai
+import numpy as np
+from utils import JSONManager
 
 class BaseCamera():
     def __init__(self, img):
@@ -26,8 +28,12 @@ class ImageCamera(BaseCamera):
     def __del__(self):
         cv2.destroyAllWindows()
 
-class OAKDCamera(BaseCamera):
+class OAKDCamera(BaseCamera, JSONManager):
     def __init__(self, resolution=(640,400)) -> None:
+        self._camera_config(resolution) # Setup the camera
+        self.frame = None
+
+    def _camera_config(self, resolution):
         # Create pipeline
         self.pipeline = dai.Pipeline()
 
@@ -57,7 +63,7 @@ class OAKDCamera(BaseCamera):
         self.depth.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
         # Options: MEDIAN_OFF, KERNEL_3x3, KERNEL_5x5, KERNEL_7x7 (default)
         self.depth.initialConfig.setMedianFilter(dai.MedianFilter.KERNEL_7x7)
-        self.depth.setLeftRightCheck(False)
+        self.depth.setLeftRightCheck(True)
         self.depth.setExtendedDisparity(True)
         self.depth.setSubpixel(True)
 
@@ -67,8 +73,9 @@ class OAKDCamera(BaseCamera):
         self.depth.disparity.link(self.xoutDepth.input)
 
         self.device = dai.Device(self.pipeline)
+        self.device.setIrLaserDotProjectorBrightness(1200) # in mA, 0..1200
+        self.device.setIrFloodLightBrightness(1500) # in mA, 0..1500
         self.qRgb = self.device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
-        self.frame = None
 
     def get_frame(self):
         inRgb = self.qRgb.get()
@@ -91,7 +98,6 @@ class OAKDCamera(BaseCamera):
     
     def __del__(self):
         cv2.destroyAllWindows()
-        self.device.close()
 
 if __name__ == "__main__":
     import numpy as np
@@ -112,12 +118,12 @@ if __name__ == "__main__":
         depth = camera.get_depth()
 
         steer = depth @ array
-        print(np.sum(steer)/(640*10))
-        
-        # Remove noise from depth image
-        depth = cv2.medianBlur(depth, 9)
+        print(np.sum(steer)/(640*15))
 
-        # cv2.imshow("rgb", frame)
+        # Colormap depth map for visualization
+        depth = cv2.applyColorMap(depth, cv2.COLORMAP_JET)
+
+        cv2.imshow("rgb", frame)
         cv2.imshow("depth", depth)
         if cv2.waitKey(1) == ord('q'):
             break
