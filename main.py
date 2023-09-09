@@ -10,10 +10,9 @@ vehicle = VESC()
 detector = DepthFilter(camera)
 
 # 1D array gausian kernel
-array = np.linspace(-1, 1, 640//2)
+array = np.linspace(0.5, 1, 640//2)
 array = np.concatenate((array[:320], -array[320:]), axis=0)
 
-print(array)
 
 # Negate the second half of the array
 # array = np.concatenate((array[:320], -array[320:]), axis=0)
