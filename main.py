@@ -21,12 +21,12 @@ while True:
     # Get histogram in the horizontal direction
     hist = np.sum(depth_exp, axis=0)
 
+    # Smooth the histogram
+    hist = np.convolve(hist, np.ones(50)/200, mode='same')
+
     # Crop the left and right edges
     hist[:50] = 200
     hist[-50:] = 200
-
-    # Smooth the histogram
-    hist = np.convolve(hist, np.ones(200)/200, mode='same')
 
     # Find the lastest minimum continous value
     steer = np.argmin(hist)/640
