@@ -1,7 +1,6 @@
 import cv2
 import depthai as dai
 import numpy as np
-from utils import JSONManager
 
 class BaseCamera():
     def __init__(self, img):
@@ -28,7 +27,7 @@ class ImageCamera(BaseCamera):
     def __del__(self):
         cv2.destroyAllWindows()
 
-class OAKDCamera(BaseCamera, JSONManager):
+class OAKDCamera(BaseCamera):
     def __init__(self, resolution=(640,400)) -> None:
         self._camera_config(resolution) # Setup the camera
         self.frame = None
@@ -102,6 +101,7 @@ class OAKDCamera(BaseCamera, JSONManager):
 if __name__ == "__main__":
     import numpy as np
     import cv2
+    import time
 
     camera = OAKDCamera()
     print(f'Image shape: {camera.get_frame().shape}, Depth shape: {camera.get_depth().shape}')
@@ -111,6 +111,7 @@ if __name__ == "__main__":
 
     # Negate the second half of the array
     array = np.concatenate((array[:320], -array[320:]), axis=0)
+    start_time = time.time()
     
 
     while True:
@@ -118,12 +119,17 @@ if __name__ == "__main__":
         depth = camera.get_depth()
 
         steer = depth @ array
-        print(np.sum(steer)/(640*15))
+        # print(np.sum(steer)/(640*15))
 
         # Colormap depth map for visualization
         depth = cv2.applyColorMap(depth, cv2.COLORMAP_JET)
 
-        cv2.imshow("rgb", frame)
-        cv2.imshow("depth", depth)
-        if cv2.waitKey(1) == ord('q'):
-            break
+        # print refresh rate
+        current_time = time.time()
+        print(f'FPS: {1/(current_time-start_time):.2f}')    
+        start_time = current_time    
+
+        # cv2.imshow("rgb", frame)
+        # cv2.imshow("depth", depth)
+        # if cv2.waitKey(1) == ord('q'):
+        #     break

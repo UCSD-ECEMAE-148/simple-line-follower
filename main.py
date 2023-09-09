@@ -1,22 +1,24 @@
 import cv2
+import numpy as np
 
 from lib.camera import OAKDCamera
 from lib.depth_fitler import DepthFilter
-# from lib.actuator import VESC
+from lib.actuator import VESC
        
 camera = OAKDCamera()
-# vehicle = VESC()
+vehicle = VESC()
 detector = DepthFilter(camera)
 
-while True:
-    steering, throttle = detector.get_actuator_values()
-    # print steering to 3 decimal places
-    print(f'Steering: {steering:.3f}, Throttle: {throttle:.3f}')
-    # vehicle.run(steering, throttle)
+# 1D array gausian kernel
+array = cv2.getGaussianKernel(640, 0)
 
-    # Wait for q keypress or KeyboardInterrupt event to occur
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        detector.save_settings() # Choose to save settings if in calibration mode
-        if detector.calibration_mode:
-            cv2.destroyAllWindows()
-        break
+# Negate the second half of the array
+array = np.concatenate((array[:320], -array[320:]), axis=0)
+
+while True:
+    depth = camera.get_depth()
+
+    steer = depth @ array
+    steer = np.sum(steer)/(640*15)
+
+    vehicle.run(steer, 0.0)
