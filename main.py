@@ -18,6 +18,9 @@ while True:
     depth_thresh = 0.25
     depth_exp[depth_exp < depth_thresh] = 0 # Threshold depth
 
+    # crop the top 1/3 of the image
+    depth_exp[:int(depth_exp.shape[0]/3), :] = 0
+
     # Get histogram in the horizontal direction
     hist = np.sum(depth_exp, axis=0)
 
