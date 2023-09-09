@@ -21,14 +21,13 @@ while True:
     # Low pass filter, kernel size 5
     hist = np.convolve(hist, np.ones(5)/5, mode='same')
 
-    # Left side sum negative and right side sum positive
-    new_hist = np.copy(hist)/40000
-    new_hist[:320] = new_hist[:320]
-    new_hist[320:] = -new_hist[320:]
+    # Get index of smallest value in the histogram
+    steer = np.argmin(hist) - 320
 
-    # Apply 1D gausian kernel
-    steer = np.sum(new_hist)
-    steer = np.clip(steer, -1, 1)
+    # Normilize steering value to -1 to 1
+    steer = steer/320
+
+    # Remap steering value to 0 to 1
     steer = (steer + 1)/2
 
     vehicle.run(steer, -0.03)
