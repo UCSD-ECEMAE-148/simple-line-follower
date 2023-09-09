@@ -21,7 +21,7 @@ while True:
     depth = camera.get_depth()
 
     steer = depth @ array
-    steer = steer[320:]
+    steer = steer[:320]
     steer = np.sum(steer)/(640*100)
 
     # clamp between -1 to 1
