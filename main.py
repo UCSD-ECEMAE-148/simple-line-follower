@@ -29,4 +29,4 @@ while True:
     # print(steer)
     # map to from -1 to 1 to 0 to 1
     steer = (steer + 1)/2
-    vehicle.run(steer, 0.02)
+    vehicle.run(steer, -0.03)
