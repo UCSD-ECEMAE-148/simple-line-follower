@@ -10,8 +10,8 @@ vehicle = VESC()
 detector = DepthFilter(camera)
 
 # 1D array gausian kernel
-array = np.linspace(0.5, 1, 320)
-array = np.concatenate((array, -array), axis=0)
+array = np.linspace(0, 2.5, 320)
+array = np.concatenate((array, -np.flip(array)), axis=0)
 
 
 # Negate the second half of the array
@@ -22,7 +22,7 @@ while True:
 
     steer = depth @ array
     steer = steer[:320]
-    steer = np.sum(steer)/(640*100)
+    steer = np.sum(steer)/(640*500)
 
     # clamp between -1 to 1
     steer = np.clip(steer, -1, 1)
