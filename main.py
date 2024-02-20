@@ -1,10 +1,10 @@
 import cv2
 
-from lib.camera import OAKDCamera
+from lib.camera import ImageCamera, OAKDCamera
 from lib.hsv_filter import detectLine
 from lib.actuator import VESC
        
-camera = OAKDCamera()
+camera = ImageCamera()
 vehicle = VESC()
 detector = detectLine(camera)
 

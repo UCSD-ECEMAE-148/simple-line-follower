@@ -12,7 +12,7 @@ class BaseCamera():
         pass
 
 class ImageCamera(BaseCamera):
-    def __init__(self, path=None, resolution=(300, 300)):
+    def __init__(self, path='test_images/straight_lines1.jpg', resolution=(300, 300)):
         # load image from path
         self.image = cv2.imread(path)
         self.image = cv2.resize(self.image, resolution)
