@@ -15,7 +15,7 @@ while True:
 
     # Wait for q keypress or KeyboardInterrupt event to occur
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        detector.save_settings() # Choose to save settings if in calibration mode
         if detector.calibration_mode:
             cv2.destroyAllWindows()
+            detector.save_settings() # Choose to save settings if in calibration mode
         break
